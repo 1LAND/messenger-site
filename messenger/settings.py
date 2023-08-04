@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'User.apps.UserConfig',
     'UserGroups.apps.UsergroupsConfig',
     'UserMessages.apps.UsermessagesConfig', 
+    # 'Gallery.apps.GalleryConfig', 
     'Drf.apps.DrfConfig',
 
 ]
