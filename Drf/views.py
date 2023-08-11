@@ -2,7 +2,9 @@ from django.shortcuts import render
 
 from rest_framework.views import APIView
 
+from pprint import pprint
 
+from django.db.models import *
 
 from rest_framework import renderers
 from rest_framework import viewsets
@@ -11,7 +13,6 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from rest_framework.decorators import action as a
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 
 from .serializers import UserSerializer,UserMessageSerializer,UserGroupSerializer
@@ -20,6 +21,7 @@ from User.models import User
 from UserGroups.models import UserGroups
 from UserMessages.models import UserMessages
 
+from .permissions import IsAuthenticatedOrAdmin
 
 class JPEGRenderer(renderers.BaseRenderer):
     media_type = 'image/jpeg'
@@ -46,14 +48,17 @@ class UserViewSet(viewsets.ModelViewSet):
     
     queryset = User.objects.all()
     serializer_class = UserSerializer 
-    permission_classes = [IsAuthenticated]
-    @a(methods=['get'],detail=True)
+    # permission_classes = [IsAuthenticatedOrAdmin]
+    @a(methods=['post','get'],detail=True)
     def groups(self,request,pk=None):
-        user = User.objects.get(pk=pk)
-        if request.user.id == int(pk) or bool(request.user and request.user.is_staff):
-            return Response({'groups':user.groups.values()})
+        users = User.objects.filter(usergroups__id__contains=1)
+        if request.user.id in list(users.values_list('id',flat=True)):
+            _users = {'users':list(users.values('id','username','avatar'))}
+            user = User.objects.get(pk=pk)
+            data = list(user.groups.values())
+            data[0]['users'] =list(users.values('id','username','avatar'))
+            return Response({'groups':data})
         return Response({'error':'No permission'})
-
 class AvatarUserView(APIView):
     renderer_classes = [JPEGRenderer]
     def get(self, request, *args, **kwargs):
@@ -81,7 +86,7 @@ class UserGroupsPagination(PageNumberPagination):
 class UserGroupsViewSet(viewsets.ModelViewSet):
     queryset = UserGroups.objects.all()
     serializer_class = UserGroupSerializer 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrAdmin]
     pagination_class = UserGroupsPagination
 
     @a(methods=['get'],detail=True)

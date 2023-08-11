@@ -43,8 +43,11 @@ INSTALLED_APPS = [
     'User.apps.UserConfig',
     'UserGroups.apps.UsergroupsConfig',
     'UserMessages.apps.UsermessagesConfig', 
-    # 'Gallery.apps.GalleryConfig', 
+    'Gallery.apps.GalleryConfig', 
     'Drf.apps.DrfConfig',
+
+
+    "debug_toolbar",
 
 ]
 
@@ -56,6 +59,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    'debug_toolbar_force.middleware.ForceDebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'messenger.urls'
@@ -112,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -148,3 +154,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]

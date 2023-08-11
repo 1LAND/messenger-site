@@ -1,10 +1,10 @@
 Drf/__pycache__
-Drf/migrations/__pycache__
+Drf/migrations
 messenger/__pycache__
 User/__pycache__
-User/migrations/__pycache__
+User/migrations
 UserGroups/__pycache__
-UserGroups/migrations/__pycache__
+UserGroups/migrations
 UserMessages/__pycache__
-UserMessages/migrations/__pycache__
+UserMessages/migrations
 db.sqlite3
