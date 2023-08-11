@@ -48,17 +48,15 @@ class UserViewSet(viewsets.ModelViewSet):
     
     queryset = User.objects.all()
     serializer_class = UserSerializer 
-    # permission_classes = [IsAuthenticatedOrAdmin]
+    permission_classes = [IsAuthenticatedOrAdmin]
     @a(methods=['post','get'],detail=True)
     def groups(self,request,pk=None):
-        users = User.objects.filter(usergroups__id__contains=1)
-        if request.user.id in list(users.values_list('id',flat=True)):
-            _users = {'users':list(users.values('id','username','avatar'))}
-            user = User.objects.get(pk=pk)
-            data = list(user.groups.values())
-            data[0]['users'] =list(users.values('id','username','avatar'))
-            return Response({'groups':data})
-        return Response({'error':'No permission'})
+        user = User.objects.only('groups').get(pk=pk)
+        data = list(user.groups.values())
+        for id in list(user.groups.values_list('id',flat=True)):
+            users = User.objects.filter(usergroups__id__contains=id).only('id','username','avatar')
+            data[id-1]['users'] = list(users.values('id','username','avatar'))
+        return Response({'data':data})
 class AvatarUserView(APIView):
     renderer_classes = [JPEGRenderer]
     def get(self, request, *args, **kwargs):

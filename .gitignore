@@ -8,3 +8,5 @@ UserGroups/migrations
 UserMessages/__pycache__
 UserMessages/migrations
 db.sqlite3
+Gallery/__pycache__
+Gallery/migrations/
